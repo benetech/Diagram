@@ -1,0 +1,3 @@
+[submodule "diagram"]
+	path = diagram
+	url = git://github.com/romsrini/DiagramRailsApp.git
