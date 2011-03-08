@@ -1,0 +1,10 @@
+
+Register Library
+curl -F "library[name]=New Library Name" http://localhost:3000/libraries.xml
+- name needs to be unique
+
+Register Image
+- need to use library_id of already created library
+- combination of library_id, book_id, image_id are required and need to be unique
+- isbn, page_number, sequence_number, caption, and url are optional parameters
+curl -F "image[library_id]=29274&image[book_id]=1459989&image[image_id]=img003&image[url]=http://www.romsrini.name/Travel/Myanmar/yangon-monastery/091109srinivasanburma0675b/744972296_ptFTc-M.jpg http://localhost:3000/images.json
