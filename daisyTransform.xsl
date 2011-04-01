@@ -19,7 +19,16 @@ xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
 
   <!-- docbook translates to html -->
   <xsl:template match="dtb:dtbook">
-    <html><xsl:apply-templates/></html>
+    <html>
+        <xsl:apply-templates/>
+        <!-- defer image description loading -->
+        <xsl:for-each select="//dtb:img">
+            <xsl:variable name="divId">img<xsl:value-of select="generate-id(.)"/></xsl:variable>
+            <script type="text/javascript">
+                <xsl:attribute name="src">http://diagram-staging.heroku.com/imageDesc.json?uid=<xsl:value-of select="/dtb:dtbook/dtb:head/dtb:meta[@name='dtb:uid']/@content"/>&amp;image_location=<xsl:value-of select="@src"/>&amp;callback=<xsl:value-of select="$divId"/>Callback</xsl:attribute>
+            </script>
+        </xsl:for-each>
+    </html>
   </xsl:template>
 
   <!-- head maps directly -->
@@ -32,7 +41,22 @@ xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
       <title><xsl:value-of select="/dtb:dtbook/dtb:book/dtb:frontmatter/dtb:doctitle"/></title>
 
       <link rel="stylesheet" type="text/css" href="html.css" />
-
+      <script type="text/javascript">
+         function imageDescCallbackHelper(divName, text) {
+            var targetDiv = document.getElementById(divName);
+            if (targetDiv.innerText != undefined) {
+                targetDiv.innerText = text;
+            } else if (targetDiv.textContent != undefined) {
+                targetDiv.textContent = text;
+            }
+         }
+         <xsl:for-each select="//dtb:img">
+            <xsl:variable name="divId">img<xsl:value-of select="generate-id(.)"/></xsl:variable>
+            function <xsl:value-of select="$divId"/>Callback(json) {
+                imageDescCallbackHelper('<xsl:value-of select="$divId"/>', json['body']);
+            }
+         </xsl:for-each>
+      </script>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -567,7 +591,11 @@ xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
         <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
       </xsl:if>
     </xsl:element>
-        <xsl:element name="br"/>
+    <xsl:element name="br"/>
+    <xsl:variable name="divId">img<xsl:value-of select="generate-id(.)"/></xsl:variable>
+    <div class="imageDescBox" style="border:1px solid black; padding:0.25em; font-size: 80%;">
+        <xsl:attribute name="id"><xsl:value-of select="$divId"/></xsl:attribute>
+    </div>
     <xsl:element name="form">
         <xsl:attribute name="method">POST</xsl:attribute>
         <xsl:attribute name="target">imageDescWindow</xsl:attribute>        
@@ -595,12 +623,9 @@ xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
         <xsl:element name="br"/>
         <xsl:element name="input">
             <xsl:attribute name="type">submit</xsl:attribute>
-            <xsl:attribute name="value">Submit image description</xsl:attribute>
+            <xsl:attribute name="value">Submit new image description</xsl:attribute>
         </xsl:element>
     </xsl:element>
-        <xsl:element name="br"/>
-		[<xsl:element name="a"><xsl:attribute name="target">imageDescWindow</xsl:attribute><xsl:attribute name="href">http://diagram-staging.heroku.com/imageDesc?uid=<xsl:value-of select="/dtb:dtbook/dtb:head/dtb:meta[@name='dtb:uid']/@content"/>&amp;image_location=<xsl:value-of select="@src"/></xsl:attribute>Click here for image description</xsl:element>]
-	<xsl:apply-templates/>
   </xsl:template>
 
   <!-- imggroup maps to div with class -->
