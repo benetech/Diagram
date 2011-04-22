@@ -25,7 +25,7 @@ xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
         <xsl:for-each select="//dtb:img">
             <xsl:variable name="divId">img<xsl:value-of select="generate-id(.)"/></xsl:variable>
             <script type="text/javascript">
-                <xsl:attribute name="src">http://diagram-staging.heroku.com/imageDesc.json?uid=<xsl:value-of select="/dtb:dtbook/dtb:head/dtb:meta[@name='dtb:uid']/@content"/>&amp;image_location=<xsl:value-of select="@src"/>&amp;callback=<xsl:value-of select="$divId"/>Callback</xsl:attribute>
+                <xsl:attribute name="src">http://diagram.heroku.com/imageDesc.json?uid=<xsl:value-of select="/dtb:dtbook/dtb:head/dtb:meta[@name='dtb:uid']/@content"/>&amp;image_location=<xsl:value-of select="@src"/>&amp;callback=<xsl:value-of select="$divId"/>Callback</xsl:attribute>
             </script>
         </xsl:for-each>
     </html>
@@ -599,7 +599,7 @@ xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/">
     <xsl:element name="form">
         <xsl:attribute name="method">POST</xsl:attribute>
         <xsl:attribute name="target">imageDescWindow</xsl:attribute>        
-        <xsl:attribute name="action">http://diagram-staging.heroku.com/imageDesc</xsl:attribute>
+        <xsl:attribute name="action">http://diagram.heroku.com/imageDesc</xsl:attribute>
         <xsl:element name="textarea">
             <xsl:attribute name="name">dynamic_description[body]</xsl:attribute>
             <xsl:attribute name="rows">2</xsl:attribute>
